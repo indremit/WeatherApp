@@ -1,0 +1,117 @@
+<div class="background">
+    <div class="search-card">
+        <mat-card class="search-mat-card">       
+            <mat-card-title class="title"> Current and forecasted weather for largest cities in Lithuania </mat-card-title>
+            <mat-card-subtitle> The app can use city name, or geographical coordinates (latitude, longitude). </mat-card-subtitle>
+            <mat-card-subtitle> Available cities: Vilnius, Kaunas, Klaipėda, Šiauliai, Panevėžys. </mat-card-subtitle>
+            <mat-card-content>
+                <form>
+                    <mat-form-field appearance="fill" class="input-field"> 
+                        <mat-label> Enter city name or geographical coordinates </mat-label>
+                        <input [(ngModel)]="inputValue" (keydown.enter)="showCurrentWeather()" 
+                            type="text" matInput [formControl]="control" [matAutocomplete]="auto">
+                        <mat-autocomplete #auto="matAutocomplete">
+                            <mat-option *ngFor="let option of filteredOptions | async" [value]="option.name">
+                                {{option.name}}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>      
+                    <mat-card-actions>
+                        <button 
+                            mat-raised-button 
+                            class="button-color" 
+                            (click)="showCurrentWeather()">
+                            Search
+                        </button>
+                    </mat-card-actions>
+                </form>
+            </mat-card-content>
+        </mat-card>
+    </div>
+    <br>
+                
+    <div *ngIf="showWeatherInfo == true">
+
+        <!-- Current weather -->
+        <mat-card class="card-current">       
+            <mat-card-content>  
+                <mat-list>                    
+                    <mat-list-item> 
+                        <mat-icon> location_on </mat-icon> 
+                        <h3> {{weatherData?.name}} </h3> 
+                    </mat-list-item>  
+                    <div class="current-weather-container">                        
+                        <mat-list-item >
+                            <img src="http://openweathermap.org/img/wn/{{weatherData?.weather[0].icon}}@2x.png" 
+                                alt="Weather image" width="50" height="50" class="weather-icon">
+                            <div class="temperature">
+                                <span> {{weatherData?.main.temp}} </span> 
+                                <span>&deg;</span> 
+                            </div>
+                        </mat-list-item>
+                        <mat-list-item> 
+                            <span class="details-value"> Feels like {{weatherData?.main.feels_like}} </span> 
+                            <span class="details-value"> &deg; </span>
+                        </mat-list-item>
+                    </div>
+                    <div class="current-weather-details-container"> 
+                        <div class="details-row"> 
+                            <span> Latitude, longitude </span>
+                            <span class="details-value"> {{weatherData?.coord.lat}},{{weatherData?.coord.lon}} </span> 
+                        </div>
+                        <div class="details-row"> 
+                            <span> Humidity </span>
+                            <span class="details-value"> {{weatherData?.main.humidity}} % </span> 
+                        </div>
+                        <div class="details-row"> 
+                            <span> Wind speed </span> 
+                            <span class="details-value"> {{weatherData?.wind.speed}} m/s </span> 
+                        </div>
+                    </div>
+                </mat-list>
+            </mat-card-content>
+        </mat-card>
+
+        <br>
+
+        <!-- Forecasted weather -->
+        <mat-card-title class="forecast-title"> Forecasted weather </mat-card-title> 
+        <div class="forecast-container">   
+            <br>
+            <div *ngFor="let forecastData of forecastWeatherData">
+                <mat-card class="card-forecast">        
+                    <mat-card-content>                        
+                        <div> 
+                            <span class="details-value"> {{forecastData?.dt_txt}} </span> 
+                        </div>               
+                        <div class="temperature-forecast">
+                            <img src="http://openweathermap.org/img/wn/{{forecastData?.weather[0].icon}}@2x.png" 
+                                alt="Weather image" width="50" height="50" class="forecast-weather-icon">
+                            <span> {{forecastData?.main.temp}} </span> 
+                            <span> &deg; </span> 
+                        </div>
+                        <div> 
+                            <span class="forecast-details-value"> Feels like {{forecastData?.main.feels_like}} </span> 
+                            <span class="forecast-details-value"> &deg; </span>
+                        </div>
+
+                        <div class="details-row"> 
+                            <span> Humidity </span>
+                            <span class="details-value">  {{forecastData?.main.humidity}} % </span> 
+                        </div>
+                        <div class="details-row"> 
+                            <span> Wind speed </span> 
+                            <span class="details-value"> {{forecastData?.wind.speed}} m/s </span> 
+                        </div>       
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="showWeatherInfo == false" class="not-found">
+        <p> {{this.message}} </p>
+    </div>
+</div>  
+      
+  
